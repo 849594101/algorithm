@@ -1,17 +1,31 @@
 # algorithm
 programming
 
-声明学习笔记记录知识：参考自代码随想录。
-
 # 题目
 
 ## 字符串
 
-offer20有限状态机
+#### offer20有限状态机
+
+## 树
+
+#### offer32-1层序遍历 
+
+（递归、以及借助队列，参考层序遍历，写的复杂了。
+
+#### offer32-3 之字遍历树 
+
+层序遍历升级版，根据奇偶层数，将其倒序就好。
+
+#### offer26 判断一个树是否为另个树子树 
+
+思路就是先序遍历，判断是不是。  树这块都是递归
+
+
+
+学习笔记记录知识：参考自代码随想录。
 
 ## 二叉树
-
-offer32-1层序遍历（递归、以及借助队列）
 
 ## 1.递归遍历、迭代遍历、层序遍历
 
@@ -206,4 +220,160 @@ class Solution {
 
     }
 }
+```
+
+## 2.翻转二叉树、对称二叉树
+
+```java
+这种代码还是比较难，第一个递归，是后序遍历递归到最左叶子节点，然后交换。
+    层序遍历：核心是遍历到每个节点，然后交换左右孩子。
+//DFS递归
+class Solution {
+   /**
+     * 前后序遍历都可以
+     * 中序不行，因为先左孩子交换孩子，再根交换孩子（做完后，右孩子已经变成了原来的左孩子），再右孩子交换孩子（此时其实是对原来的左孩子做交换）
+     */
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        invertTree(root.left);
+        invertTree(root.right);
+        swapChildren(root);
+        return root;
+    }
+
+    private void swapChildren(TreeNode root) {
+        TreeNode tmp = root.left;
+        root.left = root.right;
+        root.right = tmp;
+    }
+}
+
+//BFS
+class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {return null;}
+        ArrayDeque<TreeNode> deque = new ArrayDeque<>();
+        deque.offer(root);
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            while (size-- > 0) {
+                TreeNode node = deque.poll();
+                swap(node);
+                if (node.left != null) deque.offer(node.left);
+                if (node.right != null) deque.offer(node.right);
+            }
+        }
+        return root;
+    }
+
+    public void swap(TreeNode root) {
+        TreeNode temp = root.left;
+        root.left = root.right;
+        root.right = temp;
+    }
+}
+```
+
+```java
+ /**
+     * 递归法  判断二叉树是否对称
+     */
+    public boolean isSymmetric1(TreeNode root) {
+        return compare(root.left, root.right);
+    }
+
+    private boolean compare(TreeNode left, TreeNode right) {
+
+        if (left == null && right != null) {
+            return false;
+        }
+        if (left != null && right == null) {
+            return false;
+        }
+
+        if (left == null && right == null) {
+            return true;
+        }
+        if (left.val != right.val) {
+            return false;
+        }
+        // 比较外侧
+        boolean compareOutside = compare(left.left, right.right);
+        // 比较内侧
+        boolean compareInside = compare(left.right, right.left);
+        return compareOutside && compareInside;
+    }
+
+    /**
+     * 迭代法
+     * 使用双端队列，相当于两个栈
+     */
+    public boolean isSymmetric2(TreeNode root) {
+        Deque<TreeNode> deque = new LinkedList<>();
+        deque.offerFirst(root.left);
+        deque.offerLast(root.right);
+        while (!deque.isEmpty()) {
+            TreeNode leftNode = deque.pollFirst();
+            TreeNode rightNode = deque.pollLast();
+            if (leftNode == null && rightNode == null) {
+                continue;
+            }
+//            if (leftNode == null && rightNode != null) {
+//                return false;
+//            }
+//            if (leftNode != null && rightNode == null) {
+//                return false;
+//            }
+//            if (leftNode.val != rightNode.val) {
+//                return false;
+//            }
+            // 以上三个判断条件合并
+            if (leftNode == null || rightNode == null || leftNode.val != rightNode.val) {
+                return false;
+            }
+            deque.offerFirst(leftNode.left);
+            deque.offerFirst(leftNode.right);
+            deque.offerLast(rightNode.right);
+            deque.offerLast(rightNode.left);
+        }
+        return true;
+    }
+
+    /**
+     * 迭代法
+     * 使用普通队列
+     */
+    public boolean isSymmetric3(TreeNode root) {
+        Queue<TreeNode> deque = new LinkedList<>();
+        deque.offer(root.left);
+        deque.offer(root.right);
+        while (!deque.isEmpty()) {
+            TreeNode leftNode = deque.poll();
+            TreeNode rightNode = deque.poll();
+            if (leftNode == null && rightNode == null) {
+                continue;
+            }
+//            if (leftNode == null && rightNode != null) {
+//                return false;
+//            }
+//            if (leftNode != null && rightNode == null) {
+//                return false;
+//            }
+//            if (leftNode.val != rightNode.val) {
+//                return false;
+//            }
+            // 以上三个判断条件合并
+            if (leftNode == null || rightNode == null || leftNode.val != rightNode.val) {
+                return false;
+            }
+            // 这里顺序与使用Deque不同
+            deque.offer(leftNode.left);
+            deque.offer(rightNode.right);
+            deque.offer(leftNode.right);
+            deque.offer(rightNode.left);
+        }
+        return true;
+    }
 ```
