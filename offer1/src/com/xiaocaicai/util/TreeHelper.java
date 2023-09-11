@@ -53,7 +53,8 @@ public class TreeHelper {
         if (str.isEmpty()) {
             return null;
         }
-
+        str.replace("[", "");
+        str.replace("]", "");
         String[] values = str.split(",");
         TreeNode root = new TreeNode(Integer.parseInt(values[0]));
         Queue<TreeNode> queue = new LinkedList<>();
