@@ -1,5 +1,7 @@
 package com.xiaocaicai.backtracking;
 
+import com.xiaocaicai.util.TreeNode;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,13 +51,5 @@ public class Offer32_2 {
     }
 
 
-    public class TreeNode {
-        int val;
-        TreeNode left;
-        TreeNode right;
 
-        TreeNode(int x) {
-            val = x;
-        }
-    }
 }
